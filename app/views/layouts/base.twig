@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Trang mặc định
+			{% endblock %}
+		</title>
+		<link rel="stylesheet" href="/public/css/style.css">
+	</head>
+	<body>
+		{% include 'partials/sidebar.twig' %}
+		{% include 'partials/header.twig' %}
+
+		<main>
+			{% block content %}{% endblock %}
+		</main>
+
+		{% include 'partials/footer.twig' %}
+	</body>
+</html>
