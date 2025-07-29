@@ -52,7 +52,7 @@
 			<i class="fas fa-fw fa-users-cog"></i>
 			<span>chấm công</span>
 		</a>
-		<div id="collapseEmployee" class="collapse" data-parent="#accordionSidebar">
+		<div id="collapse" class="collapse" data-parent="#accordionSidebar">
 			<div class="bg-white py-2 collapse-inner rounded">
 				<a class="collapse-item" href="employees.html">Chấm công</a>
 				<a class="collapse-item" href="departments.html">Nghỉ phép</a>
@@ -100,7 +100,7 @@
 
 	<!-- Đăng xuất -->
 	<li class="nav-item">
-		<a class="nav-link" href="logout.html">
+		<a class="nav-link" href="{{env['APP_URL']}}/{{env['APP_NAME']}}/{{env['APP_PUBLIC']}}/logout">
 			<i class="fas fa-sign-out-alt"></i>
 			<span>Đăng xuất</span>
 		</a>
