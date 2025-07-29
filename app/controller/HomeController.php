@@ -14,11 +14,10 @@ class HomeController
     {
         $twig = View::getView();
 
-        // $name  = "nguye trọng dc";
-        // echo $twig->render('home.twig', [
-        //     'name' => 'Nguyễn Trọng Đức'
-        // ]);
-        // $users = User::all();
-        // echo $twig->render('home.twig', ['users' => $users]);
+        $users = User::all()->toArray();
+        echo $twig->render('home.twig', [
+            'users' => $users,
+            'env' => $_ENV
+        ]);
     }
 }

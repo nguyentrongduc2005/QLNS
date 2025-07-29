@@ -1,6 +1,108 @@
-<nav>
-	<ul>
-		<li><a href="/">Trang chủ</a></li>
-		<li><a href="/about">Giới thiệu</a></li>
-	</ul>
-</nav>
+<ul
+	class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+	<!-- Logo -->
+	<a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+		<div class="sidebar-brand-icon">
+			<i class="fa-solid fa-users"></i>
+		</div>
+		<div class="sidebar-brand-text mx-2">HR Management</div>
+	</a>
+
+	<hr
+	class="sidebar-divider my-0">
+
+	<!-- Dashboard -->
+	<li class="nav-item active">
+		<a class="nav-link" href="index.html">
+			<i class="fas fa-fw fa-tachometer-alt"></i>
+			<span>Dashboard</span>
+		</a>
+	</li>
+
+	<hr
+	class="sidebar-divider">
+
+	<!-- Nhân sự -->
+	<li class="nav-item">
+		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEmployee" aria-expanded="true" aria-controls="collapseEmployee">
+			<i class="fas fa-fw fa-users-cog"></i>
+			<span>Nhân sự</span>
+		</a>
+		<div id="collapseEmployee" class="collapse" data-parent="#accordionSidebar">
+			<div class="bg-white py-2 collapse-inner rounded">
+				<a class="collapse-item" href="employees.html">Thông tin nhân viên</a>
+				<a class="collapse-item" href="departments.html">Phòng ban</a>
+				<a class="collapse-item" href="positions.html">Chức vụ</a>
+			</div>
+		</div>
+	</li>
+
+	<!-- Hợp đồng -->
+	<li class="nav-item">
+		<a class="nav-link" href="contracts.html">
+			<i class="fas fa-fw fa-file-signature"></i>
+			<span>Hợp đồng lao động</span>
+		</a>
+	</li>
+
+	<!-- Chấm công -->
+	<li class="nav-item">
+		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEmployee" aria-expanded="true" aria-controls="collapseEmployee">
+			<i class="fas fa-fw fa-users-cog"></i>
+			<span>chấm công</span>
+		</a>
+		<div id="collapseEmployee" class="collapse" data-parent="#accordionSidebar">
+			<div class="bg-white py-2 collapse-inner rounded">
+				<a class="collapse-item" href="employees.html">Chấm công</a>
+				<a class="collapse-item" href="departments.html">Nghỉ phép</a>
+			</div>
+		</div>
+	</li>
+
+
+	<!-- Lương thưởng -->
+	<li class="nav-item">
+		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSalary" aria-expanded="false" aria-controls="collapseSalary">
+			<i class="fas fa-fw fa-dollar-sign"></i>
+			<span>Lương & Phụ cấp</span>
+		</a>
+		<div id="collapseSalary" class="collapse" data-parent="#accordionSidebar">
+			<div class="bg-white py-2 collapse-inner rounded">
+				<a class="collapse-item" href="salary.html">Bảng lương</a>
+				<a class="collapse-item" href="allowance.html">Phụ cấp</a>
+				<a class="collapse-item" href="deduction.html">Khấu trừ</a>
+			</div>
+		</div>
+	</li>
+
+	<!-- KPI -->
+	<li class="nav-item">
+		<a class="nav-link" href="kpi.html">
+			<i class="fas fa-fw fa-chart-line"></i>
+			<span>Đánh giá hiệu suất</span>
+		</a>
+	</li>
+
+	<!-- Quản lý người dùng -->
+	<li class="nav-item">
+		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUser" aria-expanded="false" aria-controls="collapseUser">
+			<i class="fas fa-fw fa-user-shield"></i>
+			<span>Tài khoản hệ thống</span>
+		</a>
+		<div id="collapseUser" class="collapse" data-parent="#accordionSidebar">
+			<div class="bg-white py-2 collapse-inner rounded">
+				<a class="collapse-item" href="users.html">Danh sách người dùng</a>
+				<a class="collapse-item" href="roles.html">Phân quyền</a>
+			</div>
+		</div>
+	</li>
+
+	<!-- Đăng xuất -->
+	<li class="nav-item">
+		<a class="nav-link" href="logout.html">
+			<i class="fas fa-sign-out-alt"></i>
+			<span>Đăng xuất</span>
+		</a>
+	</li>
+</ul>

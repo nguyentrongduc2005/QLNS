@@ -6,9 +6,7 @@ use App\Controller\HomeController;
 $router = new Router();
 
 
-$router->before('GET', '/.*', function () {
-    echo "dsfsdfdsfsdfsd";
-});
+$router->before('GET', '/.*', function () {});
 // Home
 $router->get('/', function () {
     (new HomeController())->index();
