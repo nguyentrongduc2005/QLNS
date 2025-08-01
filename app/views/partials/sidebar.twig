@@ -130,7 +130,7 @@
 		</li>
 	{% endif %}
 	<!-- yeu cầu báo cáo -->
-	{% if role in ['admin', 'boss', 'user'] %}
+	{% if role in ['admin', 'boss'] %}
 		<li class="nav-item {% if currentRoute in ['report_leave', 'report_cost', 'report_contract'] %}active{% endif %}">
 			<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReport" aria-expanded="false" aria-controls="collapseReport">
 				<i class="fas fa-fw fa-file-alt"></i>

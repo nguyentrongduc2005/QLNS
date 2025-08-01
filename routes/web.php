@@ -1,4 +1,5 @@
 <?php
+require_once '../app/helper/auth.php';
 
 use Bramus\Router\Router;
 use App\Controller\HomeController;
@@ -17,34 +18,28 @@ $router->before('GET|POST', '/.*', function () {
     }
 });
 
-$router->before('GET|POST', '/.*', function () {
-    $uri = $_SERVER['REQUEST_URI'];
-
-    $publicRoutes = '#^/QLDA/public/(login|api|register)#';
-
-    if (!isset($_SESSION['user_id']) && !preg_match($publicRoutes, $uri)) {
-        header("Location: {$_ENV['APP_URL']}/{$_ENV['APP_NAME']}/{$_ENV['APP_PUBLIC']}/login");
-        exit;
-    }
-});
 
 $router->before('GET', '/.*', function () {});
 //////////////////////////////////////////////////////////////////////////////////////////
 // Home
 $router->get('/', function () {
+    authorize(['admin', 'boss', 'user']);
     (new HomeController())->index();
 });
 
 // hr
 $router->get('/employees', function () {
+    authorize(['admin', 'boss']);
     (new EmployeesController())->index();
 });
 
 $router->get('/departments', function () {
+    authorize(['admin', 'boss']);
     (new DepartmentController())->index();
 });
 
 $router->get('/positions', function () {
+    authorize(['admin', 'boss']);
     (new PositionController())->index();
 });
 
