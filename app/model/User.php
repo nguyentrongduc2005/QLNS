@@ -9,5 +9,5 @@ class User extends Model
     protected $table = 'user'; // Tên bảng trong DB
     protected $primaryKey = 'user_id';
     public $timestamps = true; // Nếu bảng không có cột created_at, updated_at
-    protected $fillable = ['username', 'password', 'role', 'employee_id', 'status'];
+    protected $fillable = ['username', 'name', 'password', 'role', 'employee_id', 'status'];
 }

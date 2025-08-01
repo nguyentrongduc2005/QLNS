@@ -16,7 +16,9 @@ class HomeController
 
         $users = User::all()->toArray();
         echo $twig->render('home.twig', [
+            'currentRoute' => 'dashboard',
             'users' => $users,
+            'role' => $_SESSION['user']['role'] ?? '',
             'env' => $_ENV
         ]);
     }

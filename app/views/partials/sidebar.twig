@@ -9,95 +9,157 @@
 		<div class="sidebar-brand-text mx-2">HR Management</div>
 	</a>
 
-	<hr
-	class="sidebar-divider my-0">
+	<hr class="sidebar-divider my-0">
+	{% if role in ['admin', 'boss','user'] %}
+		<!-- Dashboard -->
+		<li class="nav-item {% if currentRoute == 'dashboard' %}active{% endif %}">
+			<a class="nav-link" href="{{env['APP_URL']}}/{{env['APP_NAME']}}/{{env['APP_PUBLIC']}}/">
+				<i class="fas fa-fw fa-tachometer-alt"></i>
+				<span>Dashboard</span>
+			</a>
+		</li>
 
-	<!-- Dashboard -->
-	<li class="nav-item active">
-		<a class="nav-link" href="index.html">
-			<i class="fas fa-fw fa-tachometer-alt"></i>
-			<span>Dashboard</span>
-		</a>
-	</li>
-
-	<hr
-	class="sidebar-divider">
+		<hr class="sidebar-divider">
+	{% endif %}
 
 	<!-- Nhân sự -->
-	<li class="nav-item">
-		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEmployee" aria-expanded="true" aria-controls="collapseEmployee">
-			<i class="fas fa-fw fa-users-cog"></i>
-			<span>Nhân sự</span>
-		</a>
-		<div id="collapseEmployee" class="collapse" data-parent="#accordionSidebar">
-			<div class="bg-white py-2 collapse-inner rounded">
-				<a class="collapse-item" href="employees.html">Thông tin nhân viên</a>
-				<a class="collapse-item" href="departments.html">Phòng ban</a>
-				<a class="collapse-item" href="positions.html">Chức vụ</a>
+	{% if role in ['admin', 'boss'] %}
+		<li class="nav-item {% if currentRoute in ['employees', 'departments', 'positions'] %}active{% endif %}">
+			<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEmployee" aria-expanded="true" aria-controls="collapseEmployee">
+				<i class="fas fa-fw fa-users-cog"></i>
+				<span>Nhân sự</span>
+			</a>
+			<div id="collapseEmployee" class="collapse {% if currentRoute in ['employees', 'departments', 'positions'] %}show{% endif %}" data-parent="#accordionSidebar">
+				<div class="bg-white py-2 collapse-inner rounded">
+					<a class="collapse-item {% if currentRoute == 'employees' %}active{% endif %}" href="{{env['APP_URL']}}/{{env['APP_NAME']}}/{{env['APP_PUBLIC']}}/employees">Thông tin nhân viên</a>
+					<a class="collapse-item {% if currentRoute == 'departments' %}active{% endif %}" href="{{env['APP_URL']}}/{{env['APP_NAME']}}/{{env['APP_PUBLIC']}}/departments">Phòng ban</a>
+					<a class="collapse-item {% if currentRoute == 'positions' %}active{% endif %}" href="{{env['APP_URL']}}/{{env['APP_NAME']}}/{{env['APP_PUBLIC']}}/positions">Chức vụ</a>
+				</div>
 			</div>
-		</div>
-	</li>
-
+		</li>
+	{% endif %}
 	<!-- Hợp đồng -->
-	<li class="nav-item">
-		<a class="nav-link" href="contracts.html">
-			<i class="fas fa-fw fa-file-signature"></i>
-			<span>Hợp đồng lao động</span>
-		</a>
-	</li>
-
+	{% if role in ['admin', 'boss', 'user'] %}
+		<li class="nav-item">
+			<a class="nav-link" href="contracts.html">
+				<i class="fas fa-fw fa-file-signature"></i>
+				<span>Hợp đồng lao động</span>
+			</a>
+		</li>
+	{% endif %}
 	<!-- Chấm công -->
-	<li class="nav-item">
-		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEmployee" aria-expanded="true" aria-controls="collapseEmployee">
-			<i class="fas fa-fw fa-users-cog"></i>
-			<span>chấm công</span>
-		</a>
-		<div id="collapse" class="collapse" data-parent="#accordionSidebar">
-			<div class="bg-white py-2 collapse-inner rounded">
-				<a class="collapse-item" href="employees.html">Chấm công</a>
-				<a class="collapse-item" href="departments.html">Nghỉ phép</a>
+	{% if role in ['admin'] %}
+		<li class="nav-item">
+			<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAttendance" aria-expanded="true" aria-controls="collapseEmployee">
+				<i class="fas fa-fw fa-users-cog"></i>
+				<span>chấm công</span>
+			</a>
+			<div id="collapseAttendance" class="collapse" data-parent="#accordionSidebar">
+				<div class="bg-white py-2 collapse-inner rounded">
+					<a class="collapse-item" href="employees.html">Chấm công</a>
+					<a class="collapse-item" href="departments.html">Nghỉ phép</a>
+				</div>
 			</div>
-		</div>
-	</li>
+		</li>
+	{% endif %}
 
+	{% if role in ['user'] %}
+		<li class="nav-item">
+			<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAttendance" aria-expanded="true" aria-controls="collapseEmployee">
+				<i class="fas fa-fw fa-users-cog"></i>
+				<span>chấm công</span>
+			</a>
+			<div id="collapseAttendance" class="collapse" data-parent="#accordionSidebar">
+				<div class="bg-white py-2 collapse-inner rounded">
+					<a class="collapse-item" href="employees.html">Chấm công</a>
+					<a class="collapse-item" href="departments.html">Nghỉ phép</a>
+				</div>
+			</div>
+		</li>
+	{% endif %}
 
 	<!-- Lương thưởng -->
-	<li class="nav-item">
-		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSalary" aria-expanded="false" aria-controls="collapseSalary">
-			<i class="fas fa-fw fa-dollar-sign"></i>
-			<span>Lương & Phụ cấp</span>
-		</a>
-		<div id="collapseSalary" class="collapse" data-parent="#accordionSidebar">
-			<div class="bg-white py-2 collapse-inner rounded">
-				<a class="collapse-item" href="salary.html">Bảng lương</a>
-				<a class="collapse-item" href="allowance.html">Phụ cấp</a>
-				<a class="collapse-item" href="deduction.html">Khấu trừ</a>
+	{% if role in ['user'] %}
+		<li class="nav-item">
+			<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSalary" aria-expanded="false" aria-controls="collapseSalary">
+				<i class="fas fa-fw fa-dollar-sign"></i>
+				<span>Lương & Phụ cấp</span>
+			</a>
+			<div id="collapseSalary" class="collapse" data-parent="#accordionSidebar">
+				<div class="bg-white py-2 collapse-inner rounded">
+					<a class="collapse-item" href="salary.html">Bảng lương</a>
+					<a class="collapse-item" href="allowance.html">Phụ cấp</a>
+					<a class="collapse-item" href="deduction.html">Khấu trừ</a>
+				</div>
 			</div>
-		</div>
-	</li>
+		</li>
+	{% endif %}
+	<!-- Lương thưởng admin -->
+	{% if role in ['admin', 'boss'] %}
+		<li class="nav-item">
+			<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSalary" aria-expanded="false" aria-controls="collapseSalary">
+				<i class="fas fa-fw fa-dollar-sign"></i>
+				<span>Lương & Phụ cấp</span>
+			</a>
+			<div id="collapseSalary" class="collapse" data-parent="#accordionSidebar">
+				<div class="bg-white py-2 collapse-inner rounded">
+					<a class="collapse-item" href="salary.html">Lương nhân sự</a>
+					<a class="collapse-item" href="allowance.html">Phụ cấp</a>
+					<a class="collapse-item" href="deduction.html">Khấu trừ</a>
+				</div>
+			</div>
+		</li>
+	{% endif %}
 
 	<!-- KPI -->
-	<li class="nav-item">
-		<a class="nav-link" href="kpi.html">
-			<i class="fas fa-fw fa-chart-line"></i>
-			<span>Đánh giá hiệu suất</span>
-		</a>
-	</li>
-
-	<!-- Quản lý người dùng -->
-	<li class="nav-item">
-		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUser" aria-expanded="false" aria-controls="collapseUser">
-			<i class="fas fa-fw fa-user-shield"></i>
-			<span>Tài khoản hệ thống</span>
-		</a>
-		<div id="collapseUser" class="collapse" data-parent="#accordionSidebar">
-			<div class="bg-white py-2 collapse-inner rounded">
-				<a class="collapse-item" href="users.html">Danh sách người dùng</a>
-				<a class="collapse-item" href="roles.html">Phân quyền</a>
+	{% if role in ['admin'] %}
+		<li class="nav-item">
+			<a class="nav-link" href="kpi.html">
+				<i class="fas fa-fw fa-chart-line"></i>
+				<span>Đánh giá hiệu suất</span>
+			</a>
+		</li>
+	{% endif %}
+	<!-- KPI user-->
+	{% if role in ['user'] %}
+		<li class="nav-item">
+			<a class="nav-link" href="kpi.html">
+				<i class="fas fa-fw fa-chart-line"></i>
+				<span>hiệu suất cá nhân</span>
+			</a>
+		</li>
+	{% endif %}
+	<!-- yeu cầu báo cáo -->
+	{% if role in ['admin', 'boss', 'user'] %}
+		<li class="nav-item {% if currentRoute in ['report_leave', 'report_cost', 'report_contract'] %}active{% endif %}">
+			<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReport" aria-expanded="false" aria-controls="collapseReport">
+				<i class="fas fa-fw fa-file-alt"></i>
+				<span>Yêu cầu báo cáo</span>
+			</a>
+			<div id="collapseReport" class="collapse {% if currentRoute in ['report_leave', 'report_cost', 'report_contract'] %}show{% endif %}" data-parent="#accordionSidebar">
+				<div class="bg-white py-2 collapse-inner rounded">
+					<a class="collapse-item {% if currentRoute == 'report_leave' %}active{% endif %}" href="{{env['APP_URL']}}/{{env['APP_NAME']}}/{{env['APP_PUBLIC']}}/report_leave">Báo cáo nghỉ phép</a>
+					<a class="collapse-item {% if currentRoute == 'report_cost' %}active{% endif %}" href="{{env['APP_URL']}}/{{env['APP_NAME']}}/{{env['APP_PUBLIC']}}/report_cost">Báo cáo chi phí</a>
+					<a class="collapse-item {% if currentRoute == 'report_contract' %}active{% endif %}" href="{{env['APP_URL']}}/{{env['APP_NAME']}}/{{env['APP_PUBLIC']}}/report_contract">Báo cáo hợp đồng</a>
+				</div>
 			</div>
-		</div>
-	</li>
-
+		</li>
+	{% endif %}
+	<!-- Quản lý người dùng -->
+	{% if role in ['boss'] %}
+		<li class="nav-item">
+			<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUser" aria-expanded="false" aria-controls="collapseUser">
+				<i class="fas fa-fw fa-user-shield"></i>
+				<span>Tài khoản hệ thống</span>
+			</a>
+			<div id="collapseUser" class="collapse" data-parent="#accordionSidebar">
+				<div class="bg-white py-2 collapse-inner rounded">
+					<a class="collapse-item" href="users.html">Danh sách người dùng</a>
+					<a class="collapse-item" href="roles.html">Phân quyền</a>
+				</div>
+			</div>
+		</li>
+	{% endif %}
 	<!-- Đăng xuất -->
 	<li class="nav-item">
 		<a class="nav-link" href="{{env['APP_URL']}}/{{env['APP_NAME']}}/{{env['APP_PUBLIC']}}/logout">

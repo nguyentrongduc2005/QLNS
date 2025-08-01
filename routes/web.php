@@ -3,6 +3,9 @@
 use Bramus\Router\Router;
 use App\Controller\HomeController;
 use App\Controller\AuthController;
+use App\Controller\EmployeesController;
+use App\Controller\DepartmentController;
+use App\Controller\PositionController;
 use App\Controller\Error;
 
 $router = new Router();
@@ -26,20 +29,38 @@ $router->before('GET|POST', '/.*', function () {
 });
 
 $router->before('GET', '/.*', function () {});
+//////////////////////////////////////////////////////////////////////////////////////////
 // Home
 $router->get('/', function () {
     (new HomeController())->index();
 });
 
+// hr
+$router->get('/employees', function () {
+    (new EmployeesController())->index();
+});
+
+$router->get('/departments', function () {
+    (new DepartmentController())->index();
+});
+
+$router->get('/positions', function () {
+    (new PositionController())->index();
+});
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 //login 
 $router->get('/login', function () {
     (new AuthController())->showLogin();
 });
 
 // login 
-$router->post('/login', function () {
-    (new AuthController())->login();
-});
+// $router->post('/login', function () {
+//     (new AuthController())->login();
+// });
 
 // login trả json
 $router->post('/api/login', function () {
@@ -56,5 +77,6 @@ $router->get('/logout', function () {
 $router->set404(function () {
     (new Error())->notFound();
 });
+
 
 $router->run();
