@@ -17,7 +17,8 @@ class EmployeesController
 
         echo $twig->render('hr/employees.twig', [
             'env' => $_ENV,
-            'currentRoute' => 'employees'
+            'currentRoute' => 'employees',
+            'role' => $_SESSION['user']['role'] ?? ''
 
         ]);
     }

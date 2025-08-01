@@ -17,7 +17,8 @@ class PositionController
 
         echo $twig->render('hr/positions.twig', [
             'env' => $_ENV,
-            'currentRoute' => 'positions'
+            'currentRoute' => 'positions',
+            'role' => $_SESSION['user']['role'] ?? ''
         ]);
     }
 }

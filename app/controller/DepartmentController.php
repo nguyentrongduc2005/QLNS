@@ -17,7 +17,8 @@ class DepartmentController
 
         echo $twig->render('hr/departments.twig', [
             'env' => $_ENV,
-            'currentRoute' => 'departments'
+            'currentRoute' => 'departments',
+            'role' => $_SESSION['user']['role'] ?? ''
         ]);
     }
 }
