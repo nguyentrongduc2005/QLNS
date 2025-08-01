@@ -1,11 +1,8 @@
 <?php
 
 namespace App\Controller;
-
-// use App\Models\User;
 use Config\View;
-use App\model\User;
-
+use App\Models\User;
 class HomeController
 {
 

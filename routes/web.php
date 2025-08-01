@@ -8,6 +8,7 @@ use App\Controller\EmployeesController;
 use App\Controller\DepartmentController;
 use App\Controller\PositionController;
 use App\Controller\Error;
+use App\Controller\ProfileController;
 
 $router = new Router();
 
@@ -75,3 +76,27 @@ $router->set404(function () {
 
 
 $router->run();
+
+//trang cá nhân 
+$router->get('/profile', function () {
+    authorize(['admin', 'user']);  // Chỉ cho phép admin và user truy cập
+    (new ProfileController())->showProfile();
+});
+//Update thông tin cá nhân
+$router->post('/profile/update', function () {
+    authorize(['admin', 'user']);
+    (new ProfileController())->updateProfile();
+});
+// đổi password
+$router->post('/api/change-password', function () {
+    (new AuthController())->changePassword();
+});
+//yêu cầu OTP để đổi mật khẩu
+$router->post('/request-change-password', function () {
+    (new AuthController())->requestChangePassword();
+});
+
+//xử lý đổi mật khẩu
+$router->post('/api/change-password', function () {
+    (new AuthController())->changePassword();
+});

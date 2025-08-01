@@ -405,6 +405,18 @@ ALTER TABLE `user`
   ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employees_id`);
 COMMIT;
 
+-- Đổi tên bảng `employees` thành `details`
+RENAME TABLE `employees` TO `details`;
+
+-- Thêm trường `avataa` vào bảng `details`
+ALTER TABLE `details` ADD `avataa` VARCHAR(255) DEFAULT NULL;
+
+-- Thêm trường `otp` vào bảng `details`
+ALTER TABLE `details` ADD `otp` VARCHAR(10) DEFAULT NULL;
+
+-- Cập nhật trường `status` trong bảng `user` thành kiểu enum với giá trị `active` và `inactive`
+ALTER TABLE `user` MODIFY `status` ENUM('active', 'inactive') DEFAULT 'active';
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

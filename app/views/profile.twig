@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Trang Cá Nhân</title>
+
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <!-- Google Fonts - Nunito -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,700,900" rel="stylesheet">
+
+    <!-- SB Admin 2 CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/gh/StartBootstrap/startbootstrap-sb-admin-2@4.1.4/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <style>
+        .update-section {
+            display: none;
+        }
+
+        /* Bo tròn các ô input */
+        .form-control {
+            border-radius: 20px; /* Đặt giá trị bo tròn */
+        }
+
+        .btn-user {
+            border-radius: 20px; /* Bo tròn nút button */
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-primary">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-10 col-lg-12 col-md-9">
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <div class="row">
+                            <div class="col-lg-6 d-none d-lg-block bg-gradient-light text-center py-5">
+                                <i class="fas fa-user fa-7x text-primary"></i>
+                                <h4 class="mt-4 text-gray-600">Thông tin cá nhân</h4>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="text-center mb-4">
+                                        <h1 class="h4 text-gray-900">Chào mừng {{ user.name }}!</h1>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="name"><strong>Tên:</strong></label>
+                                        <p>{{ user.name }}</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="email"><strong>Email:</strong></label>
+                                        <p>{{ user.email }}</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="phone"><strong>Số điện thoại:</strong></label>
+                                        <p>{{ user.phone }}</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="role"><strong>Chức vụ:</strong></label>
+                                        <p>{{ user.role }}</p>
+                                    </div>
+
+                                    <hr>
+
+                                    <!-- Nút chỉnh sửa để hiển thị form cập nhật -->
+                                    <button class="btn btn-primary btn-user" onclick="toggleEditForm()">Chỉnh sửa thông tin</button>
+
+                                    <!-- Phần chỉnh sửa thông tin cá nhân -->
+                                    <div class="update-section">
+                                        <h3>Cập nhật thông tin cá nhân</h3>
+
+                                        <form action="/profile/update" method="POST">
+                                            <div class="form-group">
+                                                <label for="name">Tên:</label>
+                                                <input type="text" class="form-control" id="name" name="name" value="{{ user.name }}" required>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="email">Email:</label>
+                                                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="phone">Số điện thoại:</label>
+                                                <input type="text" class="form-control" id="phone" name="phone" value="{{ user.phone }}" required>
+                                            </div>
+
+                                            <button type="submit" class="btn btn-primary btn-user btn-block">
+                                                Cập nhật
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS scripts via CDN -->
+    <script src="{{ base_url }}/assets/js/profile.js"></script> <!-- For profile -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery.easing@1.4.1/jquery.easing.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/StartBootstrap/startbootstrap-sb-admin-2@4.1.4/js/sb-admin-2.min.js"></script>
+
+    <script>
+        function toggleEditForm() {
+            var updateSection = document.querySelector('.update-section');
+            if (updateSection.style.display === "none" || updateSection.style.display === "") {
+                updateSection.style.display = "block"; // Hiển thị form chỉnh sửa
+            } else {
+                updateSection.style.display = "none"; // Ẩn form chỉnh sửa
+            }
+        }
+    </script>
+</body>
+
+</html>
