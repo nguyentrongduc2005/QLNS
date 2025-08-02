@@ -1,0 +1,201 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Trang chủ
+{% endblock %}
+
+{% block content %}
+	<div
+		class="container-fluid">
+		<!-- Tiêu đề -->
+		<h1 class="h3 mb-4 text-gray-800">Bảng điều khiển</h1>
+
+		<!-- Hàng 1: Thống kê tổng quan -->
+		<div
+			class="row">
+			<!-- Tổng nhân viên -->
+			<div class="col-xl-3 col-md-6 mb-4">
+				<div class="card border-left-primary shadow h-100 py-2">
+					<div class="card-body">
+						<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng nhân viên</div>
+						<div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_employee }}</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Tổng phòng ban -->
+			<div class="col-xl-3 col-md-6 mb-4">
+				<div class="card border-left-success shadow h-100 py-2">
+					<div class="card-body">
+						<div class="text-xs font-weight-bold text-success text-uppercase mb-1">Phòng ban</div>
+						<div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_department }}</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Vị trí/chức vụ -->
+			<div class="col-xl-3 col-md-6 mb-4">
+				<div class="card border-left-info shadow h-100 py-2">
+					<div class="card-body">
+						<div class="text-xs font-weight-bold text-info text-uppercase mb-1">Chức vụ</div>
+						<div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_position }}</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Tỷ lệ nghỉ phép hôm nay -->
+			<div class="col-xl-3 col-md-6 mb-4">
+				<div class="card border-left-warning shadow h-100 py-2">
+					<div class="card-body">
+						<div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Nghỉ hôm nay</div>
+						<div class="h5 mb-0 font-weight-bold text-gray-800">{{ on_leave_today }}
+							người</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Hàng 2: Biểu đồ -->
+		<div
+			class="row">
+			<!-- Biểu đồ phòng ban -->
+			<div class="col-xl-4">
+				<div class="card shadow mb-4">
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary">Tỷ lệ nhân viên theo phòng ban</h6>
+					</div>
+					<div class="card-body">
+						<canvas id="chartByDepartment"></canvas>
+					</div>
+				</div>
+			</div>
+
+			<!-- Biểu đồ số nhân viên theo tháng -->
+			<div class="col-xl-4">
+				<div class="card shadow mb-4">
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary">Tuyển dụng theo tháng</h6>
+					</div>
+					<div class="card-body">
+						<canvas id="chartEmployeeByMonth"></canvas>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-4">
+				<div class="card shadow mb-4">
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary">Chấm công đúng giờ (7h30)</h6>
+					</div>
+					<div class="card-body">
+						<canvas id="chartOnTimeAttendance"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Biểu đồ chấm công đúng giờ -->
+
+		<!-- Hàng 3: Danh sách gần đây -->
+		<div class="row">
+			<div class="col-xl-12">
+				<div class="card shadow mb-4">
+					<div class="card-header">
+						<h6 class="m-0 font-weight-bold text-primary">Nhân viên sắp hết hạn hợp đồng</h6>
+					</div>
+					<div class="card-body">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>Mã NV</th>
+									<th>Họ tên</th>
+									<th>Phòng ban</th>
+									<th>Hết hạn</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for staff in expiring_contracts %}
+									<tr>
+										<td>{{ staff.code }}</td>
+										<td>{{ staff.name }}</td>
+										<td>{{ staff.department }}</td>
+										<td>{{ staff.expiry_date }}</td>
+									</tr>
+								{% else %}
+									<tr>
+										<td colspan="4" class="text-center">Không có dữ liệu</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Chart.js script -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script>
+		const ctx1 = document.getElementById('chartByDepartment').getContext('2d');
+const chart1 = new Chart(ctx1, {
+type: 'doughnut',
+data: {
+labels: {{ chart_labels|json_encode|raw }},
+datasets: [
+{
+data: {{ chart_data|json_encode|raw }},
+backgroundColor: [
+'#4e73df',
+'#1cc88a',
+'#36b9cc',
+'#f6c23e',
+'#e74a3b'
+]
+}
+]
+}
+});
+
+const ctx2 = document.getElementById('chartEmployeeByMonth').getContext('2d');
+const chart2 = new Chart(ctx2, {
+type: 'bar',
+data: {
+labels: {{ months|json_encode|raw }},
+datasets: [
+{
+label: 'Nhân viên',
+data: {{ employee_by_month|json_encode|raw }},
+backgroundColor: '#4e73df'
+}
+]
+}
+});
+
+const ctx3 = document.getElementById('chartOnTimeAttendance').getContext('2d');
+const chart3 = new Chart(ctx3, {
+type: 'line',
+data: {
+labels: {{ attendance_labels|json_encode|raw }}, // Ví dụ: ['01/08', '02/08', '03/08']
+datasets: [
+{
+label: 'Chấm công đúng giờ',
+data: {{ attendance_data|json_encode|raw }}, // Ví dụ: [32, 28, 35]
+fill: false,
+borderColor: '#1cc88a',
+tension: 0.1
+}
+]
+},
+options: {
+responsive: true,
+scales: {
+yAxes: [
+{
+ticks: {
+beginAtZero: true
+}
+}
+]
+}
+}
+});
+	</script>
+{% endblock %}

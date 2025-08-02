@@ -2,21 +2,21 @@
 
 namespace App\Controller;
 
-use App\Models\Detail; 
+use App\Models\Detail;
 use config\View;
 
 class ProfileController
-{   
+{
     private function checkAuth()
     {
         if (!isset($_SESSION['user'])) {
-            header('Location: /login');
+            header('Location: ' . $_ENV['APP_URL'] . '/' . $_ENV['APP_NAME'] . '/' . $_ENV['APP_PUBLIC'] . '/login');
             exit();
         }
     }
 
     public function showProfile()
-    {   
+    {
         $this->checkAuth();
 
         // Lấy thông tin người dùng từ bảng details
@@ -31,13 +31,13 @@ class ProfileController
     public function updateProfile()
     {
         $this->checkAuth();
-        
+
         // Lấy thông tin người dùng từ bảng details
         $user = Detail::find($_SESSION['user']['id']);  // Sử dụng Detail thay vì User
 
         // Lấy dữ liệu từ POST
         $full_name = $_POST['full_name'] ?? ''; // Cập nhật tên người dùng
-        $email = $_POST['email'] ?? ''; 
+        $email = $_POST['email'] ?? '';
         $phone = $_POST['phone'] ?? '';
         $address = $_POST['address'] ?? ''; // Có thể thêm thêm các trường khác từ bảng `details`
 

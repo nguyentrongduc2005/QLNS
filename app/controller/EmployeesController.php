@@ -4,15 +4,15 @@ namespace App\Controller;
 
 use Config\View;
 
-class DetailsController
+class EmployeesController
 {
     public function index()
     {
         $twig = View::getView();
 
-        echo $twig->render('hr/details.twig', [ 
+        echo $twig->render('hr/employees.twig', [
             'env' => $_ENV,
-            'currentRoute' => 'details', 
+            'currentRoute' => 'employees',
             'role' => $_SESSION['user']['role'] ?? ''
         ]);
     }
