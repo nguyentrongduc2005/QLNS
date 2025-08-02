@@ -2,24 +2,18 @@
 
 namespace App\Controller;
 
-// use App\Models\User;
 use Config\View;
 
-
-class EmployeesController
+class DetailsController
 {
-
-
     public function index()
     {
         $twig = View::getView();
 
-
-        echo $twig->render('hr/employees.twig', [
+        echo $twig->render('hr/details.twig', [ 
             'env' => $_ENV,
-            'currentRoute' => 'employees',
+            'currentRoute' => 'details', 
             'role' => $_SESSION['user']['role'] ?? ''
-
         ]);
     }
 }

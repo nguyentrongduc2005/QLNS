@@ -2,47 +2,53 @@
 
 namespace App\Controller;
 
-use App\Models\User;
-use Config\View;
+use App\Models\Detail; 
+use config\View;
 
 class ProfileController
 {   
-      private function checkAuth()
+    private function checkAuth()
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
             exit();
         }
     }
-    
+
     public function showProfile()
     {   
         $this->checkAuth();
-        $user = User::find($_SESSION['user']['id']); 
+
+        // Lấy thông tin người dùng từ bảng details
+        $user = Detail::find($_SESSION['user']['id']);  // Sử dụng Detail thay vì User
+
         $twig = View::getView();
         echo $twig->render('profile.twig', [
             'user' => $user
         ]);
     }
 
-    
     public function updateProfile()
     {
         $this->checkAuth();
-        $user = User::find($_SESSION['user']['id']);  
-
-       
-        $name = $_POST['name'] ?? '';
-        $email = $_POST['email'] ?? '';
-        $phone = $_POST['phone'] ?? '';
-
         
-        $user->name = $name;
+        // Lấy thông tin người dùng từ bảng details
+        $user = Detail::find($_SESSION['user']['id']);  // Sử dụng Detail thay vì User
+
+        // Lấy dữ liệu từ POST
+        $full_name = $_POST['full_name'] ?? ''; // Cập nhật tên người dùng
+        $email = $_POST['email'] ?? ''; 
+        $phone = $_POST['phone'] ?? '';
+        $address = $_POST['address'] ?? ''; // Có thể thêm thêm các trường khác từ bảng `details`
+
+        // Cập nhật thông tin người dùng
+        $user->full_name = $full_name;
         $user->email = $email;
         $user->phone = $phone;
+        $user->address = $address;
         $user->save();
 
-        
+        // Chuyển hướng đến trang profile với trạng thái thành công
         header('Location: /profile?status=success');
     }
 }
