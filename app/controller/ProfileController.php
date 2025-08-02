@@ -7,6 +7,7 @@ use config\View;
 
 class ProfileController
 {
+    // Kiểm tra xem người dùng đã đăng nhập chưa
     private function checkAuth()
     {
         if (!isset($_SESSION['user'])) {
@@ -15,19 +16,28 @@ class ProfileController
         }
     }
 
+    // Hiển thị thông tin người dùng
     public function showProfile()
     {
         $this->checkAuth();
 
         // Lấy thông tin người dùng từ bảng details
-        $user = Detail::find($_SESSION['user']['id']);  // Sử dụng Detail thay vì User
+        $user = Detail::find($_SESSION['user']['id']);  
 
+        if (!$user) {
+            // Nếu không tìm thấy người dùng, chuyển hướng tới trang lỗi
+            header('Location: /error');
+            exit();
+        }
+
+        // Render trang profile
         $twig = View::getView();
         echo $twig->render('profile.twig', [
             'user' => $user
         ]);
     }
 
+    // Cập nhật thông tin người dùng
     public function updateProfile()
     {
         $this->checkAuth();
@@ -35,11 +45,39 @@ class ProfileController
         // Lấy thông tin người dùng từ bảng details
         $user = Detail::find($_SESSION['user']['id']);  // Sử dụng Detail thay vì User
 
-        // Lấy dữ liệu từ POST
-        $full_name = $_POST['full_name'] ?? ''; // Cập nhật tên người dùng
+        if (!$user) {
+            // Nếu không tìm thấy người dùng, chuyển hướng tới trang lỗi
+            header('Location: /error');
+            exit();
+        }
+
+        // Lấy dữ liệu từ POST và thực hiện kiểm tra tính hợp lệ
+        $full_name = $_POST['full_name'] ?? '';
         $email = $_POST['email'] ?? '';
         $phone = $_POST['phone'] ?? '';
-        $address = $_POST['address'] ?? ''; // Có thể thêm thêm các trường khác từ bảng `details`
+        $address = $_POST['address'] ?? '';
+
+        // Kiểm tra tính hợp lệ của dữ liệu
+        $errors = [];
+        
+        if (empty($full_name)) {
+            $errors[] = 'Tên không được để trống.';
+        }
+        
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Email không hợp lệ.';
+        }
+
+        if (!preg_match('/^\d{10}$/', $phone)) {
+            $errors[] = 'Số điện thoại phải gồm 10 chữ số.';
+        }
+
+        // Nếu có lỗi, quay lại trang profile và hiển thị lỗi
+        if (!empty($errors)) {
+            $_SESSION['errors'] = $errors;
+            header('Location: /profile');
+            exit();
+        }
 
         // Cập nhật thông tin người dùng
         $user->full_name = $full_name;
@@ -48,7 +86,7 @@ class ProfileController
         $user->address = $address;
         $user->save();
 
-        // Chuyển hướng đến trang profile với trạng thái thành công
+        // Chuyển hướng tới trang profile với trạng thái thành công
         header('Location: /profile?status=success');
     }
 }
