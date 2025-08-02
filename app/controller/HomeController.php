@@ -47,9 +47,5 @@ class HomeController
         return count($employees);
     }
 
-    public function getDepartmentData()
-    {
-        $departments = Department::all();
-        return count($departments);
-    }
+    public function getDepartmentData() {}
 }
