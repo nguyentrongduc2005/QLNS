@@ -9,6 +9,8 @@ use App\Controller\DepartmentController;
 use App\Controller\PositionController;
 use App\Controller\Error;
 use App\Controller\ProfileController;
+use App\Controller\DetailsController;
+use App\Models\Detail;
 
 $router = new Router();
 
@@ -29,9 +31,9 @@ $router->get('/', function () {
 });
 
 // hr
-$router->get('/employees', function () {
+$router->get('/details', function () {
     authorize(['admin', 'boss']);
-    (new EmployeesController())->index();
+    (new DetailsController())->index();
 });
 
 $router->get('/departments', function () {
