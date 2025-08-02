@@ -19,7 +19,7 @@ class HomeController
                 'currentRoute' => 'dashboard',
                 'role' => $_SESSION['user']['role'] ?? '',
                 'env' => $_ENV,
-                'total_employee' => 123,
+                'total_employee' => $this->getEmployeeData(),
                 'total_department' => 6,
                 'total_position' => 15,
                 'on_leave_today' => 2,
@@ -39,5 +39,17 @@ class HomeController
             // Redirect to login if user role is not admin or boss
             header('Location: ' . $_ENV['APP_URL'] . '/' . $_ENV['APP_NAME'] . '/' . $_ENV['APP_PUBLIC'] . '/profile');
         }
+    }
+
+    public function getEmployeeData()
+    {
+        $employees = User::where('role', '!=', 'admin')->get();
+        return count($employees);
+    }
+
+    public function getDepartmentData()
+    {
+        $departments = Department::all();
+        return count($departments);
     }
 }
