@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Models\User;
 use Config\View;
-use PHPMailer\PHPMailer\PHPMailer; 
+use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use App\Models\User;
 
 class AuthController
-{   
+{
     // Kiểm tra nếu người dùng đã đăng nhập
     private function checkAuth()
     {
@@ -36,20 +36,20 @@ class AuthController
 
         try {
             // Cấu hình SMTP
-            $mail->isSMTP();                                           
-            $mail->Host       = 'smtp.example.com';                       
-            $mail->SMTPAuth   = true;                                    
-            $mail->Username   = 'your-email@example.com';                
-            $mail->Password   = 'your-email-password';                   
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;          
-            $mail->Port       = 587;                                     
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.example.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'your-email@example.com';
+            $mail->Password   = 'your-email-password';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = 587;
 
             // Người gửi và người nhận
             $mail->setFrom('no-reply@yourdomain.com', 'Hệ thống quản lý');
             $mail->addAddress($email);
 
             // Nội dung email
-            $mail->isHTML(true);                                  
+            $mail->isHTML(true);
             $mail->Subject = 'Mã OTP Xác Thực Đổi Mật Khẩu';
             $mail->Body    = 'Mã OTP của bạn là: ' . $otp;
 
@@ -77,8 +77,8 @@ class AuthController
         }
 
         // Tìm người dùng theo email
-        $user = User::where('email', $email)->first();
 
+        $user = User::where('username', $email)->first(); // Giả sử email là username
         if ($user) {
             if ($this->sendOtp($email)) {
                 echo json_encode(['status' => 'success', 'message' => 'OTP đã được gửi']);
@@ -94,6 +94,7 @@ class AuthController
     // Phương thức login API
     public function apiLogin()
     {
+
         header('Content-Type: application/json');
 
         $json = json_decode(file_get_contents("php://input"), true);
@@ -109,7 +110,9 @@ class AuthController
             return;
         }
 
+
         $user = User::where('username', $username)->first();
+
 
         if ($user && password_verify($password, $user->password)) {
             $_SESSION['user'] = [
@@ -186,7 +189,7 @@ class AuthController
     // Phương thức hiển thị trang đổi mật khẩu
     public function showChangePassword()
     {
-        $this->checkAuth(); 
+        $this->checkAuth();
 
         $twig = View::getView();
         echo $twig->render('change-password.twig');

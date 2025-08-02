@@ -12,6 +12,7 @@ use App\Controller\ProfileController;
 use App\Controller\DetailsController;
 use App\Models\Detail;
 
+
 $router = new Router();
 
 
@@ -76,10 +77,6 @@ $router->set404(function () {
     (new Error())->notFound();
 });
 
-
-$router->run();
-
-//trang cá nhân 
 $router->get('/profile', function () {
     authorize(['admin', 'user']);  // Chỉ cho phép admin và user truy cập
     (new ProfileController())->showProfile();
@@ -102,3 +99,8 @@ $router->post('/request-change-password', function () {
 $router->post('/api/change-password', function () {
     (new AuthController())->changePassword();
 });
+
+
+$router->run();
+
+//trang cá nhân 
