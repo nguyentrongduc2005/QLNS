@@ -90,12 +90,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function enableEditMode() {
         $('#employeeModal input').prop('readonly', false);
+        $('#employeeModal select').prop('disabled', false);
         $('#btnSaveEdit, #btnCancelEdit').removeClass('d-none');
         $('#btnEditMode').addClass('d-none');
     }
 
     function disableEditMode() {
         $('#employeeModal input').prop('readonly', true);
+        $('#employeeModal select').prop('disabled', true);
         $('#btnSaveEdit, #btnCancelEdit').addClass('d-none');
         $('#btnEditMode').removeClass('d-none');
     }

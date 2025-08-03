@@ -38,13 +38,13 @@
 				<tbody id="employeeTable">
 					{% if employees is not empty %}
 						{% for emp in employees %}
-							<tr class="employee-row" style="cursor:pointer" data-toggle="modal" data-target="#employeeModal" data-id="{{ emp.user_id }}" data-name="{{ emp.detail.full_name ?? '' }}" data-email="{{ emp.detail.email ?? '' }}" data-phone="{{ emp.detail.phone ?? '' }}" data-gender="{{ emp.detail.gender ?? '' }}" data-address="{{ emp.detail.address ?? '' }}" data-birthday="{{ emp.detail.dob ?? '' }}" data-startdate="{{ emp.detail.date_joined ?? '' }}" data-department="{{ emp.detail.department.name ?? '' }}" data-position="{{ emp.detail.position.name ?? '' }}">
+							<tr class="employee-row" style="cursor:pointer" data-toggle="modal" data-target="#employeeModal" data-id="{{ emp.user_id }}" data-name="{{ emp.detail.full_name ?? '' }}" data-email="{{ emp.detail.email ?? '' }}" data-phone="{{ emp.detail.phone ?? '' }}" data-gender="{{ emp.detail.gender ?? '' }}" data-address="{{ emp.detail.address ?? '' }}" data-birthday="{{ emp.detail.dob ?? '' }}" data-startdate="{{ emp.detail.date_joined ?? '' }}" data-department="{{ emp.detail.department.department_id ?? '' }}" data-position="{{ emp.detail.position.position_id ?? '' }}">
 								<td>{{ emp.detail.full_name ?? 'N/A' }}</td>
 								<td>{{ emp.detail.email ?? 'N/A' }}</td>
 								<td>{{ emp.detail.department.name ?? 'N/A' }}</td>
 								<td>{{ emp.detail.position.name ?? 'N/A' }}</td>
 								<td>
-									<button class="btn btn-sm btn-danger btn-delete" data-id="{{ emp.id }}">
+									<button class="btn btn-sm btn-danger btn-delete" data-id="{{ emp.user_id }}">
 										<i class="fas fa-trash-alt"></i>
 										Xóa
 									</button>

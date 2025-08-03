@@ -127,22 +127,43 @@ class EmployeesController
 
         if (!$user) {
             http_response_code(404);
-            echo json_encode(['message' => 'Nhân viên không tồn tại']);
+            echo json_encode(['success' => false, 'message' => 'Nhân viên không tồn tại']);
             return;
         }
 
-        // Xóa chi tiết nhân viên nếu có
-        if ($user->detail) {
-            $user->detail->delete();
+        // Sử dụng transaction để đảm bảo tính toàn vẹn dữ liệu
+        try {
+            // Bắt đầu transaction
+            $this->db->beginTransaction();
+
+            // Bước 1: Xóa các bản ghi liên quan khác trước (nếu có)
+            if ($user->detail) {
+                // Xóa chấm công
+                if (method_exists($user->detail, 'attendances')) {
+                    $user->detail->attendances()->delete();
+                }
+
+                // Xóa các liên kết khác nếu có
+                // $user->detail->otherRelations()->delete();
+
+                // Xóa detail
+                $user->detail->delete();
+            }
+
+            // Bước 2: Xóa user
+            $user->delete();
+
+            // Commit transaction
+            $this->db->commit();
+
+            echo json_encode(['success' => true, 'message' => 'Xóa nhân viên thành công']);
+        } catch (Exception $e) {
+            // Rollback nếu có lỗi
+            $this->db->rollback();
+
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Lỗi khi xóa nhân viên: ' . $e->getMessage()]);
         }
-
-        // Nếu có liên kết chấm công, xóa luôn nếu cần:
-        // $user->detail->attendances()->delete();
-
-        // Xóa user
-        $user->delete();
-
-        echo json_encode(['message' => 'Xóa nhân viên thành công']);
     }
 
     function generateUsername($name, $id)
