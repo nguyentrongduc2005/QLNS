@@ -32,9 +32,9 @@ $router->get('/', function () {
 });
 
 // hr
-$router->get('/details', function () {
+$router->get('/employees', function () {
     authorize(['admin', 'boss']);
-    (new DetailsController())->index();
+    (new EmployeesController())->index();
 });
 
 $router->get('/departments', function () {

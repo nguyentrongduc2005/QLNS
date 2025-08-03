@@ -12,8 +12,8 @@ class Position extends Model
     protected $fillable = ['name', 'base_salary', 'description', 'created_at'];
 
     // Quan hệ với bảng details
-    public function details() {
+    public function details()
+    {
         return $this->hasMany(Detail::class, 'position_id');
     }
 }
-
