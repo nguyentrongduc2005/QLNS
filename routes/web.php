@@ -91,16 +91,14 @@ $router->get('/logout', function () {
     header("Location: {$_ENV['APP_URL']}/{$_ENV['APP_NAME']}/{$_ENV['APP_PUBLIC']}/");
 });
 
-$router->set404(function () {
-    (new Error())->notFound();
-});
 
-$router->get('/profile', function () {
+
+$router->get('/api/profile', function () {
     authorize(['admin', 'user']);  // Chỉ cho phép admin và user truy cập
     (new ProfileController())->showProfile();
 });
 //Update thông tin cá nhân
-$router->post('/profile/update', function () {
+$router->post('/api/profile/update', function () {
     authorize(['admin', 'user']);
     (new ProfileController())->updateProfile();
 });
@@ -118,6 +116,9 @@ $router->post('/api/change-password', function () {
     (new AuthController())->changePassword();
 });
 
+$router->set404(function () {
+    (new Error())->notFound();
+});
 
 $router->run();
 
