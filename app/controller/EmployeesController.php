@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Models\Detail;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Config\View;
+use Illuminate\Support\Facades\Log;
 
 
 class EmployeesController
@@ -122,47 +124,59 @@ class EmployeesController
 
     public function delete($id)
     {
-        // Tìm user theo ID
-        $user = User::find($id);
+        // Bắt đầu transaction thủ công
+        DB::beginTransaction();
 
-        if (!$user) {
-            http_response_code(404);
-            echo json_encode(['success' => false, 'message' => 'Nhân viên không tồn tại']);
-            return;
-        }
-
-        // Sử dụng transaction để đảm bảo tính toàn vẹn dữ liệu
         try {
-            // Bắt đầu transaction
-            $this->db->beginTransaction();
+            $user = User::find($id);
 
-            // Bước 1: Xóa các bản ghi liên quan khác trước (nếu có)
-            if ($user->detail) {
-                // Xóa chấm công
-                if (method_exists($user->detail, 'attendances')) {
-                    $user->detail->attendances()->delete();
-                }
-
-                // Xóa các liên kết khác nếu có
-                // $user->detail->otherRelations()->delete();
-
-                // Xóa detail
-                $user->detail->delete();
+            if (!$user) {
+                DB::rollback();
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Nhân viên không tồn tại'
+                ], 404);
             }
 
-            // Bước 2: Xóa user
+            if ($user->detail) {
+                $detail = $user->detail;
+
+
+                // Xóa tuần tự và kiểm tra kết quả
+                $detail->attendances()->delete();
+                $detail->evaluations()->delete();
+                $detail->leaveRequests()->delete();
+                $detail->overtimes()->delete();
+                $detail->salaries()->delete();
+
+                // Xóa detail
+                $detail->delete();
+            }
+
+            // Xóa user
             $user->delete();
 
             // Commit transaction
-            $this->db->commit();
+            DB::commit();
 
-            echo json_encode(['success' => true, 'message' => 'Xóa nhân viên thành công']);
-        } catch (Exception $e) {
-            // Rollback nếu có lỗi
-            $this->db->rollback();
+            echo json_encode([
+                'success' => true,
+                'message' => 'Xóa nhân viên thành công'
+            ]);
+        } catch (\Exception $e) {
+            // Rollback transaction nếu có lỗi
+            DB::rollback();
 
-            http_response_code(500);
-            echo json_encode(['success' => false, 'message' => 'Lỗi khi xóa nhân viên: ' . $e->getMessage()]);
+            Log::error('Delete employee transaction failed', [
+                'user_id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            echo json_encode([
+                'success' => false,
+                'message' => 'Lỗi khi xóa nhân viên: ' . $e->getMessage()
+            ], 500);
         }
     }
 
