@@ -37,6 +37,24 @@ $router->get('/employees', function () {
     (new EmployeesController())->index();
 });
 
+
+$router->post('/api/employees/create', function () {
+    authorize(['admin', 'boss']);
+    (new EmployeesController())->create();
+});
+
+
+$router->post('/api/employees/delete/{id}', function ($id) {
+    authorize(['admin', 'boss']);
+    (new EmployeesController())->delete($id);
+});
+
+
+$router->post('/api/employees/update/{id}', function ($id) {
+    authorize(['admin', 'boss']);
+    (new EmployeesController())->update($id);
+});
+
 $router->get('/departments', function () {
     authorize(['admin', 'boss']);
     (new DepartmentController())->index();

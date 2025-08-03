@@ -1,6 +1,247 @@
 {% extends 'layouts/base.twig' %}
 
-{% block title %}Nhân viên
+{% block title %}Thông tin nhân viên
 {% endblock %}
 
-{% block content %}{% endblock %}
+{% block content %}
+	<div class="container-fluid mt-4">
+		<h4 class="mb-4">Danh sách nhân viên</h4>
+
+		<!-- Actions -->
+		<div class="d-flex justify-content-between mb-3">
+			<div class="input-group w-50">
+				<div class="input-group-prepend">
+					<span class="input-group-text bg-primary text-white" id="search-label">
+						<i class="fas fa-search"></i>&nbsp; Tìm kiếm
+					</span>
+				</div>
+				<input type="text" id="searchInput" class="form-control" placeholder="Nhập họ tên hoặc email..." aria-label="Tìm kiếm" aria-describedby="search-label">
+			</div>
+			<button class="btn btn-success" data-toggle="modal" data-target="#addEmployeeModal">
+				<i class="fas fa-plus"></i>
+				Thêm mới
+			</button>
+		</div>
+
+		<!-- Table -->
+		<div class="table-responsive">
+			<table class="table table-bordered table-hover shadow-sm">
+				<thead class="thead-dark">
+					<tr>
+						<th>Họ tên</th>
+						<th>Email</th>
+						<th>Phòng ban</th>
+						<th>Chức vụ</th>
+						<th>Hành động</th>
+					</tr>
+				</thead>
+				<tbody id="employeeTable">
+					{% if employees is not empty %}
+						{% for emp in employees %}
+							<tr class="employee-row" style="cursor:pointer" data-toggle="modal" data-target="#employeeModal" data-id="{{ emp.user_id }}" data-name="{{ emp.detail.full_name ?? '' }}" data-email="{{ emp.detail.email ?? '' }}" data-phone="{{ emp.detail.phone ?? '' }}" data-gender="{{ emp.detail.gender ?? '' }}" data-address="{{ emp.detail.address ?? '' }}" data-birthday="{{ emp.detail.dob ?? '' }}" data-startdate="{{ emp.detail.date_joined ?? '' }}" data-department="{{ emp.detail.department.name ?? '' }}" data-position="{{ emp.detail.position.name ?? '' }}">
+								<td>{{ emp.detail.full_name ?? 'N/A' }}</td>
+								<td>{{ emp.detail.email ?? 'N/A' }}</td>
+								<td>{{ emp.detail.department.name ?? 'N/A' }}</td>
+								<td>{{ emp.detail.position.name ?? 'N/A' }}</td>
+								<td>
+									<button class="btn btn-sm btn-danger btn-delete" data-id="{{ emp.id }}">
+										<i class="fas fa-trash-alt"></i>
+										Xóa
+									</button>
+								</td>
+							</tr>
+						{% endfor %}
+					{% else %}
+						<tr>
+							<td colspan="5" class="text-center text-muted">Không có nhân viên nào được tìm thấy.</td>
+						</tr>
+					{% endif %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="modal fade" id="employeeModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header bg-primary text-white">
+					<h5 class="modal-title">Chi tiết nhân viên</h5>
+					<button type="button" class="close text-white" data-dismiss="modal">
+						<span>&times;</span>
+					</button>
+				</div>
+				<div class="modal-body px-4">
+					<form id="editEmployeeForm">
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label>Họ tên</label>
+								<input type="text" class="form-control" id="modalName" name="name" readonly>
+							</div>
+							<div class="form-group col-md-6">
+								<label>Email</label>
+								<input type="email" class="form-control" id="modalEmail" name="email" readonly>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label>Số điện thoại</label>
+								<input type="text" class="form-control" id="modalPhone" name="phone" readonly>
+							</div>
+							<div class="form-group col-md-6">
+								<label>Giới tính</label>
+								<select class="form-control" id="modalGender" name="gender" disabled>
+									<option value="">Chọn giới tính</option>
+									<option value="Nam">Nam</option>
+									<option value="Nữ">Nữ</option>
+									<option value="Khác">Khác</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label>Địa chỉ</label>
+							<input type="text" class="form-control" id="modalAddress" name="address" readonly>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label>Ngày sinh</label>
+								<input type="date" class="form-control" id="modalBirthday" name="birthday" readonly>
+							</div>
+							<div class="form-group col-md-6">
+								<label>Ngày vào làm</label>
+								<input type="date" class="form-control" id="modalStartDate" name="start_date" readonly>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label>Phòng ban</label>
+								<select class="form-control" id="modalDept" name="department_id" disabled>
+									<option value="">Chọn phòng ban</option>
+									{% for department in departments %}
+										<option value="{{ department.department_id }}">{{ department.name }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="form-group col-md-6">
+								<label>Chức vụ</label>
+								<select class="form-control" id="modalPosition" name="position_id" disabled>
+									<option value="">Chọn chức vụ</option>
+									{% for position in positions %}
+										<option value="{{ position.position_id }}">{{ position.name }}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+						<div
+							class="modal-footer">
+							<!-- Nút Chỉnh sửa -->
+							<button type="button" class="btn btn-primary" id="btnEditMode">
+								<i class="fas fa-edit"></i>
+								Chỉnh sửa
+							</button>
+
+							<!-- Nút Lưu và Huỷ (ẩn/hiện bằng JS) -->
+							<button type="button" class="btn btn-success d-none" id="btnSaveEdit">Lưu chỉnh sửa</button>
+							<button type="button" class="btn btn-warning d-none" id="btnCancelEdit">Huỷ chỉnh sửa</button>
+
+							<!-- Nút đóng -->
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Modal: Thêm mới -->
+	<!-- Modal: Thêm mới -->
+	<div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header bg-success text-white">
+					<h5 class="modal-title">Thêm nhân viên mới</h5>
+					<button type="button" class="close text-white" data-dismiss="modal">
+						<span>&times;</span>
+					</button>
+				</div>
+				<div class="modal-body px-4">
+					<form id="addEmployeeForm">
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label>Họ tên</label>
+								<input type="text" class="form-control" name="full_name" required>
+							</div>
+							<div class="form-group col-md-6">
+								<label>Email</label>
+								<input type="email" class="form-control" name="email" required>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label>Số điện thoại</label>
+								<input type="text" class="form-control" name="phone">
+							</div>
+							<div class="form-group col-md-6">
+								<label>Giới tính</label>
+								<select class="form-control" name="gender">
+									<option value="Nam">Nam</option>
+									<option value="Nữ">Nữ</option>
+									<option value="Khác">Khác</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label>Địa chỉ</label>
+							<input type="text" class="form-control" name="address">
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label>Ngày sinh</label>
+								<input type="date" class="form-control" name="birthday">
+							</div>
+							<div class="form-group col-md-6">
+								<label>Ngày vào làm</label>
+								<input type="date" class="form-control" name="start_work">
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label>Phòng ban</label>
+								<select class="form-control" name="department_id">
+									<option value="">Chọn phòng ban</option>
+									{% for department in departments %}
+										<option value="{{ department.department_id }}">{{ department.name }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="form-group col-md-6">
+								<label>Chức vụ</label>
+								<select class="form-control" name="position_id">
+									<option value="">Chọn chức vụ</option>
+									{% for position in positions %}
+										<option value="{{ position.position_id }}">{{ position.name }}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" form="addEmployeeForm" class="btn btn-success">Lưu</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Script -->
+
+	<script type="module" src="{{env['APP_URL']}}/{{env['APP_NAME']}}/{{env['APP_PUBLIC']}}/assets/js/employees.js"></script>
+	<style>
+		.employee-row:hover {
+			background-color: #f0f8ff !important;
+			transition: background-color 0.3s ease;
+		}
+	</style>
+{% endblock %}
