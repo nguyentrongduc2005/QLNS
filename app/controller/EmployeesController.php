@@ -4,9 +4,10 @@ namespace App\Controller;
 
 use App\Models\Detail;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Capsule\Manager as DB;
+
 use Config\View;
-use Illuminate\Support\Facades\Log;
+
 
 
 class EmployeesController
@@ -122,64 +123,55 @@ class EmployeesController
     }
 
 
+
     public function delete($id)
     {
-        // Bắt đầu transaction thủ công
-        DB::beginTransaction();
-
         try {
             $user = User::find($id);
 
             if (!$user) {
-                DB::rollback();
+                http_response_code(404);
                 echo json_encode([
                     'success' => false,
                     'message' => 'Nhân viên không tồn tại'
-                ], 404);
+                ]);
+                return;
             }
 
-            if ($user->detail) {
-                $detail = $user->detail;
+            // Sử dụng Capsule Manager thay vì Facade
+            DB::connection()->transaction(function () use ($user) {
 
+                if ($user->detail) {
+                    $detail = $user->detail;
 
-                // Xóa tuần tự và kiểm tra kết quả
-                $detail->attendances()->delete();
-                $detail->evaluations()->delete();
-                $detail->leaveRequests()->delete();
-                $detail->overtimes()->delete();
-                $detail->salaries()->delete();
+                    // Xóa các phụ thuộc
+                    $detail->attendances()->delete();
+                    $detail->evaluations()->delete();
+                    $detail->leaveRequests()->delete();
+                    $detail->overtimes()->delete();
+                    $detail->salaries()->delete();
 
-                // Xóa detail
+                    // Xóa detail
+
+                }
+
+                // Xóa user
+                $user->delete();
                 $detail->delete();
-            }
-
-            // Xóa user
-            $user->delete();
-
-            // Commit transaction
-            DB::commit();
+            });
 
             echo json_encode([
                 'success' => true,
                 'message' => 'Xóa nhân viên thành công'
             ]);
         } catch (\Exception $e) {
-            // Rollback transaction nếu có lỗi
-            DB::rollback();
-
-            Log::error('Delete employee transaction failed', [
-                'user_id' => $id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
+            http_response_code(500);
             echo json_encode([
                 'success' => false,
-                'message' => 'Lỗi khi xóa nhân viên: ' . $e->getMessage()
-            ], 500);
+                'message' => 'Lỗi khi xóa: ' . $e->getMessage()
+            ]);
         }
     }
-
     function generateUsername($name, $id)
     {
         // Bỏ dấu tiếng Việt
