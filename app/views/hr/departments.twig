@@ -3,4 +3,162 @@
 {% block title %}Phòng ban
 {% endblock %}
 
-{% block content %}{% endblock %}
+{% block content %}
+	<div class="container-fluid mt-4">
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h3 class="mb-0">Danh sách phòng ban</h3>
+			<button class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalAddDepartment">
+				<i class="fa fa-plus"></i>
+				Thêm phòng ban
+			</button>
+		</div>
+
+		<div class="row">
+			{% for pb in departments %}
+				<div class="col-md-4 mb-4">
+					<div class="card shadow-sm border-left-primary department-card h-100 position-relative cursor-pointer" data-id="{{ pb.department_id }}" data-name="{{ pb.name }}">
+						<div class="card-body text-center">
+							<h5 class="card-title font-weight-bold">{{ pb.name }}</h5>
+							<p class="card-text text-muted">{{ pb.mo_ta }}</p>
+						</div>
+
+						<!-- Nút 3 chấm -->
+						<div class="dropdown department-options">
+							<button class="btn btn-light btn-sm dropdown-toggle dots-button" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="fa fa-ellipsis-v"></i>
+							</button>
+							<div class="dropdown-menu dropdown-menu-right">
+								<a class="dropdown-item btn-edit-dept" href="#" data-id="{{ pb.department_id }}">
+									<i class="fa fa-edit mr-2"></i>Sửa
+								</a>
+								<a class="dropdown-item btn-delete-dept" href="#" data-id="{{ pb.department_id }}">
+									<i class="fa fa-trash mr-2"></i>Xoá
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+
+	</div>
+	<!-- Modal Thêm Phòng Ban -->
+	<div class="modal fade" id="modalAddDepartment" tabindex="-1" role="dialog" aria-labelledby="modalAddDepartmentLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<form id="addDepartmentForm">
+				<div class="modal-content">
+					<div class="modal-header bg-success text-white">
+						<h5 class="modal-title" id="modalAddDepartmentLabel">Thêm Phòng Ban</h5>
+						<button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div
+						class="modal-body">
+						<!-- Tên phòng ban -->
+						<div class="form-group">
+							<label for="addDepartmentName">Tên phòng ban</label>
+							<input type="text" class="form-control" id="addDepartmentName" name="name" required>
+						</div>
+
+						<!-- Mô tả -->
+						<div class="form-group">
+							<label for="addDepartmentDesc">Mô tả</label>
+							<textarea class="form-control" id="addDepartmentDesc" name="mo_ta" rows="3"></textarea>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+						<button type="submit" class="btn btn-success">Thêm</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Modal xem nhân viên -->
+	<div class="modal fade" id="modalEmployees" tabindex="-1" role="dialog" aria-labelledby="modalEmployeesLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Danh sách nhân viên phòng:
+						<span id="modal-department-name"></span>
+					</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span>&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<input type="text" id="searchEmployeeInput" class="form-control mb-3" placeholder="Tìm kiếm theo tên...">
+					<div class="table-responsive">
+						<table class="table table-bordered table-hover">
+							<thead class="thead-dark text-center">
+								<tr>
+									<th>#</th>
+									<th>Họ tên</th>
+									<th>Email</th>
+									<th>Chức vụ</th>
+								</tr>
+							</thead>
+							<tbody id="modal-employee-table-body"></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal Sửa phòng ban -->
+	<div class="modal fade" id="modalEditDepartment" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<form id="formEditDepartment" method="POST" action="/department/update">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalEditLabel">Sửa phòng ban</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span>&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<input type="hidden" name="department_id" id="editDepartmentId">
+						<div class="form-group">
+							<label for="editDepartmentName">Tên phòng ban</label>
+							<input type="text" class="form-control" id="editDepartmentName" name="name" required>
+						</div>
+						<div class="form-group">
+							<label for="editDepartmentDesc">Mô tả</label>
+							<textarea class="form-control" id="editDepartmentDesc" name="mo_ta" rows="3"></textarea>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+						<button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Script xử lý -->
+	<script>
+		const departments = {{ departments|json_encode|raw }};
+const employees = {{ all_employees|json_encode|raw }};
+	</script>
+
+	<script src="{{env['APP_URL']}}/{{env['APP_NAME']}}/{{env['APP_PUBLIC']}}/assets/js/department.js"></script>
+	<style>
+		.department-options {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			display: none;
+		}
+		.department-card:hover .department-options {
+			display: block;
+		}
+		.dots-button {
+			background: transparent;
+			border: none;
+		}
+	</style>
+{% endblock %}
